@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Production-Grade RAG Agent using NVIDIA LLMs
 
 A **production-style Retrieval-Augmented Generation (RAG) system** built from scratch using NVIDIA’s Integrate API.  
@@ -256,4 +255,3 @@ Built as a hands-on production learning project using NVIDIA’s LLM and embeddi
 =======
 # production-rag-agent
 A production-grade Retrieval-Augmented Generation (RAG) system using NVIDIA LLMs, featuring document ingestion, smart chunking, embedding caching, FastAPI backend, CLI tooling, Docker deployment, and automated evaluation metrics.
->>>>>>> 4d9f5603ae19c43863b41ec473d95d00dc7d1eff
