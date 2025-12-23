@@ -3,7 +3,7 @@
 A **production-style Retrieval-Augmented Generation (RAG) system** built from scratch using NVIDIA’s Integrate API.  
 This project demonstrates **real-world RAG engineering practices**: document ingestion, robust chunking, embedding caching, semantic retrieval, citation-grounded answering, and automatic evaluation.
 
->  Goal: build a RAG system that is **explainable, reliable, and measurable** — not a demo script.
+>  Goal: build a RAG system that is **explainable, reliable, and measurable** not a demo script.
 
 ---
 
