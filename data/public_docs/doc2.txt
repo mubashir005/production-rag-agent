@@ -1,0 +1,2 @@
+Embeddings turn text into vectors. Vector databases store these vectors.
+Retrieval finds similar vectors to the user query.

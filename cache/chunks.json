@@ -1,0 +1,74 @@
+[
+  {
+    "doc_id": "doc1",
+    "chunk_id": 0,
+    "text": "RAG retrieves relevant chunks from a knowledge base and feeds them to an LLM.\nChunking and metadata are important for citations and debugging.",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\doc1.txt"
+  },
+  {
+    "doc_id": "doc2",
+    "chunk_id": 0,
+    "text": "Embeddings turn text into vectors. Vector databases store these vectors.\nRetrieval finds similar vectors to the user query.",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\doc2.txt"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 0,
+    "text": "1. Requirements for a UG (Unternehmergesellschaft)\nA UG is a simplified form of a GmbH, designed for startups and small businesses with lower initial \ncapital.\nKey Requirements:\n1. Minimum Share Capital:\n•\n€1 minimum share capital.\n•\nShare capital must be fully paid in cash (no in-kind contributions).\n2. Articles of Association (Satzung):\n•\nMust include:\n•\nCompany name.\n•\nRegistered address in Germany.\n•\nShareholder details.\n•\nManagement structure.\n•\nShare capital contribution details.\n3. Shareh",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 1,
+    "text": "details.\n•\nManagement structure.\n•\nShare capital contribution details.\n3. Shareholders:\n•\nAt least one shareholder (can be an individual or a legal entity).\n•\nShareholders' liability is limited to their capital contributions.\n4. Managing Director (Geschäftsführer):\n•\nAt least one managing director.\n•\nMust be a natural person (individual), but does not have to be a German or EU \ncitizen.\n5. Registration with Commercial Register (Handelsregister):\n•\nMust register with the local court's commercial",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 2,
+    "text": "l Register (Handelsregister):\n•\nMust register with the local court's commercial register.\n•\nThis requires notarized documents (e.g., articles of association, managing director \nappointment).\n6. Annual Reserves:\n•\nA UG must set aside 25% of its annual profits until it accumulates €25,000 in \nreserves.\n•\nAt this point, the UG can convert to a GmbH.\n7. Address in Germany:\n•\nMust have a physical business address in Germany for registration purposes.\n8. Tax Number and Bank Account:\n•\nApply for a tax",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 3,
+    "text": "ny for registration purposes.\n8. Tax Number and Bank Account:\n•\nApply for a tax number with the tax office (Finanzamt).\n•\nOpen a German business bank account to deposit share capital.",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 4,
+    "text": "2. Requirements for a GmbH (Gesellschaft mit beschränkter Haftung)\nA GmbH is a more formal business entity suitable for businesses of all sizes, requiring higher initial\ncapital.\nKey Requirements:\n1. Minimum Share Capital:\n•\n€25,000 minimum share capital.\n•\nAt least 50% (€12,500) must be paid in cash or contributed as in-kind assets at the \ntime of registration.\n2. Articles of Association (Satzung):\n•\nMust be notarized and include:\n•\nCompany name.\n•\nRegistered address in Germany.\n•\nShareholder d",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 5,
+    "text": "ed and include:\n•\nCompany name.\n•\nRegistered address in Germany.\n•\nShareholder details.\n•\nShare distribution details.\n•\nPurpose of the company.\n•\nManagement structure.\n3. Shareholders:\n•\nAt least one shareholder (individual or legal entity).\n•\nLiability is limited to their contributions.\n4. Managing Director (Geschäftsführer):\n•\nAt least one managing director is required.\n•\nCan be a foreign national, but must reside in Germany for practical management \npurposes.\n5. Registration with Commercial R",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 6,
+    "text": "in Germany for practical management \npurposes.\n5. Registration with Commercial Register (Handelsregister):\n•\nMust register with the commercial register at the local court.\n•\nRequires notarized documentation (e.g., articles of association, proof of capital \ndeposit).\n6. Supervisory Board:\n•\nA supervisory board is not required unless the company has more than 500 \nemployees.\n7. Business Bank Account:\n•\nOpen a German business bank account to deposit share capital.\n8. Company Address in Germany:\n•\nT",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 7,
+    "text": "siness bank account to deposit share capital.\n8. Company Address in Germany:\n•\nThe company must have a registered office in Germany.",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 8,
+    "text": "Additional Considerations for Both UG and GmbH\n1. Naming Rules:\n•\nThe company name must include the legal form (UG or GmbH).\n•\nThe name must not be misleading and must be unique in the Handelsregister.\n2. Taxes and Accounting:\n•\nBoth UG and GmbH are subject to corporate tax, trade tax, and VAT (if applicable).\n•\nMaintain proper accounting records and submit annual financial statements.\n3. Notary Costs:\n•\nBoth entities require notarization, with costs varying depending on the share capital \nand c",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  },
+  {
+    "doc_id": "Requirements_Company_founding",
+    "chunk_id": 9,
+    "text": "s require notarization, with costs varying depending on the share capital \nand complexity of documents.\n4. Employment Law:\n•\nIf hiring employees, comply with German labor laws, including contracts, social \nsecurity, and insurance.\n5. Conversion from UG to GmbH:\n•\nA UG can voluntarily convert to a GmbH once it accumulates €25,000 in share \ncapital reserves.",
+    "source": "D:\\rag-lab\\nvidia_rag\\data\\public_docs\\Requirements_Company_founding.pdf"
+  }
+]

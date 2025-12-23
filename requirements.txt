@@ -1,0 +1,6 @@
+httpx
+numpy
+fastapi
+uvicorn
+pydantic
+PyMuPDF

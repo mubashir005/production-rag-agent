@@ -1,0 +1,2 @@
+RAG retrieves relevant chunks from a knowledge base and feeds them to an LLM.
+Chunking and metadata are important for citations and debugging.
