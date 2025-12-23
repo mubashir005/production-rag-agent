@@ -115,7 +115,7 @@ Supported formats:
 
 ##  Step‑by‑Step Usage
 
-### Step 1 — Ingest & chunk documents
+### Step 1 - Ingest & chunk documents
 
 ```powershell
 rag ingest
@@ -130,7 +130,7 @@ Saved: cache/chunks.json
 
 ---
 
-### Step 2 — Build embedding cache (one‑time)
+### Step 2 - Build embedding cache (one‑time)
 
 ```powershell
 rag build
@@ -146,7 +146,7 @@ Chunk vectors shape: (120, 1024)
 
 ---
 
-### Step 3 — Ask a question
+### Step 3 - Ask a question
 
 ```powershell
 rag ask "what is RAG?"
@@ -160,7 +160,7 @@ RAG retrieves relevant chunks from a knowledge base and feeds them to an LLM [do
 
 ---
 
-### Step 4 — Interactive agent
+### Step 4 - Interactive agent
 
 ```powershell
 rag run
