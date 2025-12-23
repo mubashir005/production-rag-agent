@@ -24,7 +24,7 @@ from .llm import chat
 
 
 def cmd_ingest(_: argparse.Namespace) -> None:
-    # Reuse your existing script entrypoint
+    # Reuse existing script entrypoint
     from nvidia_rag.scripts.ingest_and_chunk import main as ingest_main  # type: ignore
     ingest_main()
 

@@ -4,7 +4,7 @@ from typing import List, Dict
 def build_prompt(query: str, retrieved: List[Dict]) -> str:
     blocks = []
     for r in retrieved:
-        blocks.append(f"[{r['doc_id']}#{r['chunk_id']}]\n{r['text']}")
+        blocks.append(f"[{r['doc_id']}#{r['chunk_id']}]\n{r['text']}")  
 
     context = "\n\n".join(blocks)
 
