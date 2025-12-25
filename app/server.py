@@ -37,6 +37,25 @@ ALLOWED_EXT = {".pdf", ".txt", ".md"}
 # In-memory session cache: session_id -> (chunks, vectors)
 SESSION_CACHE: Dict[str, Tuple[List[Dict[str, Any]], np.ndarray]] = {}
 
+SESSION_CHAT: dict[str, list[dict]] = {}  # {session_id: [{"role":"user","content":"..."}, ...]}
+MAX_TURNS = 12  # keep it short so prompts don’t explode
+
+
+def get_chat(session_id: str) -> list[dict]:
+    if session_id not in SESSION_CHAT:
+        SESSION_CHAT[session_id] = []
+    return SESSION_CHAT[session_id]
+
+class ChatRequest(BaseModel):
+    query: str
+    k: int = 3
+
+class ChatResponse(BaseModel):
+    answer: str
+    top_sources: list[dict]
+    top_score: float
+    history_len: int
+
 
 def session_dir(session_id: str) -> Path:
     if not session_id or len(session_id) < 8:
@@ -353,3 +372,39 @@ def list_files(x_session_id: str = Header(default="", alias="x-session-id")):
         if p.is_file():
             files.append({"name": p.name, "size": p.stat().st_size})
     return {"session_id": x_session_id, "files": files}
+
+@app.post("/chat", response_model=ChatResponse)
+def chat_endpoint(req: ChatRequest, x_session_id: str = Header(default="", alias="x-session-id")):
+    query = req.query.strip()
+    if not query:
+        return ChatResponse(answer="Query is empty.", top_sources=[], top_score=0.0, history_len=0)
+
+    # retrieve
+    retrieved = top_k_retrieve(query, chunks, chunk_vecs, k=req.k)  # global shared index OR session index, your choice
+    if not retrieved:
+        return ChatResponse(answer="I don't know.", top_sources=[], top_score=0.0, history_len=len(get_chat(x_session_id)))
+
+    # build context prompt as before
+    context_prompt = build_prompt(query, retrieved)
+
+    #  Add history
+    history = get_chat(x_session_id)
+    # keep last turns only
+    history = history[-(MAX_TURNS*2):]
+    SESSION_CHAT[x_session_id] = history
+
+    # We’ll send: system + history + current user prompt
+    messages = [{"role": "system", "content": "Follow instructions strictly and cite sources."}]
+    messages += history
+    messages += [{"role": "user", "content": context_prompt}]
+
+    answer = chat(messages)  # you may need chat() to accept messages list (see below)
+
+    # update memory (store plain query + answer)
+    SESSION_CHAT[x_session_id].append({"role": "user", "content": query})
+    SESSION_CHAT[x_session_id].append({"role": "assistant", "content": answer})
+
+    top_score = float(retrieved[0]["score"]) if retrieved else 0.0
+    top_sources = [{"source": f"{r['doc_id']}#{r['chunk_id']}", "score": float(r["score"])} for r in retrieved]
+
+    return ChatResponse(answer=answer, top_sources=top_sources, top_score=top_score, history_len=len(SESSION_CHAT[x_session_id]))
