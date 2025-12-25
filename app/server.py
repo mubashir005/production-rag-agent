@@ -341,3 +341,15 @@ def status(x_session_id: str = Header(default="", alias="x-session-id")):
         "has_index": bool(has_chunks and has_vecs),
     }
 
+@app.get("/files")
+def list_files(x_session_id: str = Header(default="", alias="x-session-id")):
+    sdir = session_dir(x_session_id)
+    docs_dir = sdir / "docs"
+    if not docs_dir.exists():
+        return {"session_id": x_session_id, "files": []}
+
+    files = []
+    for p in sorted(docs_dir.iterdir()):
+        if p.is_file():
+            files.append({"name": p.name, "size": p.stat().st_size})
+    return {"session_id": x_session_id, "files": files}
