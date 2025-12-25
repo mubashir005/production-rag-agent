@@ -327,3 +327,17 @@ def ask(
     top_sources = [{"source": f"{r['doc_id']}#{r['chunk_id']}", "score": float(r["score"])} for r in retrieved]
 
     return AskResponse(query=query, answer=answer, top_sources=top_sources, top_score=top_score)
+
+@app.get("/status")
+def status(x_session_id: str = Header(default="", alias="x-session-id")):
+    sdir = session_dir(x_session_id)
+    has_docs = (sdir / "docs").exists() and any((sdir / "docs").iterdir())
+    has_chunks = (sdir / "chunks.json").exists()
+    has_vecs = (sdir / "vectors.npy").exists()
+
+    return {
+        "session_id": x_session_id,
+        "has_docs": bool(has_docs),
+        "has_index": bool(has_chunks and has_vecs),
+    }
+
