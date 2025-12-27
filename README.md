@@ -12,6 +12,8 @@ A **production-ready Retrieval‑Augmented Generation (RAG) system** built using
 This repository is designed to be **easy to run, easy to understand, and easy to extend**.  
 You can run it locally, via CLI, as an API, or fully containerized with Docker.
 
+> **Try the Live Demo**: Experience the RAG system in action at [https://mubashir005.github.io/ragui/](https://mubashir005.github.io/ragui/)
+
 >  **Goal**: Give users a clear, step‑by‑step path to run a real RAG system without friction.
 
 ---
