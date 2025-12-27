@@ -9,6 +9,7 @@ from typing import Dict, Any, List, Tuple, Optional
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from .config import settings
@@ -27,6 +28,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add explicit OPTIONS handler for CORS preflight
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return {"message": "OK"}
 
 # ----------------------------
 # Session storage (per-user)
@@ -305,7 +311,14 @@ def build_session_index(
     # Put into memory cache
     SESSION_CACHE[x_session_id] = (chunks, vectors)
 
-    return {"status": "ok", "session_id": x_session_id, "chunks": len(chunks), "vectors_shape": list(vectors.shape)}
+    return JSONResponse(
+        content={"status": "ok", "session_id": x_session_id, "chunks": len(chunks), "vectors_shape": list(vectors.shape)},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "x-session-id, Content-Type",
+        }
+    )
 
 
 @app.post("/ask", response_model=AskResponse)
