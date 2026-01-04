@@ -19,11 +19,11 @@ from .llm import chat
 from .embed import embed_texts  # <-- your NVIDIA embeddings wrapper
 
 
-app = FastAPI(title="NVIDIA RAG Agent API", version="0.1.0")
+app = FastAPI(title="NVIDIA RAG Agent API", version="0.1.1")  # Force redeploy
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # later restrict to your UI domain
+    allow_origins=["*"],  # Allow all origins including localhost and GitHub Pages
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
