@@ -24,7 +24,7 @@ app = FastAPI(title="NVIDIA RAG Agent API", version="0.1.2")  # CORS enabled for
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins including localhost and GitHub Pages
-    allow_credentials=True,
+    allow_credentials=False,  # Must be False to use wildcard origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
