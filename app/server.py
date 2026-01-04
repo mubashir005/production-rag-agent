@@ -291,7 +291,8 @@ def build_session_index(
     sdir = session_dir(x_session_id)
     docs_dir = sdir / "docs"
 
-    chunks = build_chunks_from_docs(docs_dir, chunk_size=450, overlap=80)
+    # Reduced chunk size to ~300 chars (~75-90 tokens) to stay well under NVIDIA's 512 token limit
+    chunks = build_chunks_from_docs(docs_dir, chunk_size=300, overlap=50)
     (sdir / "chunks.json").write_text(json.dumps(chunks, ensure_ascii=False, indent=2), encoding="utf-8")
 
     texts = [c["text"] for c in chunks]
