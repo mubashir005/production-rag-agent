@@ -101,12 +101,25 @@ def chunk_by_paragraphs(text: str, chunk_size: int = 450, overlap: int = 80) -> 
     """
     Chunk by paragraphs (better for PDFs) + overlap.
     chunk_size is characters (simple & stable).
+    NVIDIA's embedding model has 512 token limit (~2000 chars max).
+    This function ensures no chunk exceeds chunk_size.
     """
     paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
     chunks: List[str] = []
     current = ""
 
     for p in paragraphs:
+        # If paragraph itself exceeds chunk_size, split it
+        if len(p) > chunk_size:
+            # Save current accumulated text first
+            if current:
+                chunks.append(current)
+                current = ""
+            # Split oversized paragraph into chunk_size pieces
+            for i in range(0, len(p), chunk_size):
+                chunks.append(p[i:i + chunk_size])
+            continue
+        
         candidate = (current + "\n\n" + p).strip() if current else p
         if len(candidate) <= chunk_size:
             current = candidate
