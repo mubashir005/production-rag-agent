@@ -174,15 +174,25 @@ Ask multiple questions interactively.
 
 ##  Run as an API (FastAPI)
 
-Start server:
+Start server locally:
 
 ```powershell
 uvicorn app.server:app --reload
 ```
 
+Or use the production startup script:
+
+```powershell
+python start_server.py
+```
+
 Available endpoints:
 - `GET /health`
-- `POST /ask`
+- `POST /upload` (with x-session-id header)
+- `POST /build` (with x-session-id header)
+- `POST /ask` (with x-session-id header)
+- `GET /status` (with x-session-id header)
+- `GET /files` (with x-session-id header)
 - `GET /docs` (Swagger UI)
 
 Example request:
@@ -191,6 +201,34 @@ Example request:
   "query": "what are the requirements for a GmbH?"
 }
 ```
+
+---
+
+##  Deploy to Production (Railway/Render)
+
+This project includes production-ready configuration files for easy deployment.
+
+### Railway Deployment
+
+1. Push your code to GitHub
+2. Create a new project on [Railway](https://railway.app)
+3. Connect your GitHub repository
+4. Set environment variable: `NVIDIA_API_KEY`
+5. Railway will automatically detect `railway.json` and `Procfile`
+6. The server is configured to handle large file uploads (up to 100MB per file)
+
+### Render Deployment
+
+1. Push your code to GitHub
+2. Create a new Web Service on [Render](https://render.com)
+3. Connect your GitHub repository
+4. Render will use `render.yaml` configuration
+5. Set environment variable: `NVIDIA_API_KEY`
+
+**Important:** The server is configured with these limits for large document uploads:
+- Maximum file size: 100MB per file
+- Maximum total upload: 500MB per request
+- Increased timeout: 300 seconds for large file processing
 
 ---
 

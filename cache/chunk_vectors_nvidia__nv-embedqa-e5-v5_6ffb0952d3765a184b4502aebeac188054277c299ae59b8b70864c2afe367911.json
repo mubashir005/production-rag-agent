@@ -1,6 +1,0 @@
-{
-  "fingerprint": "6ffb0952d3765a184b4502aebeac188054277c299ae59b8b70864c2afe367911",
-  "num_chunks": 12,
-  "dim": 1024,
-  "embed_model": "nvidia/nv-embedqa-e5-v5"
-}
