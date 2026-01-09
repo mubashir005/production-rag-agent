@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Tuple, Optional
 
 import numpy as np
-from fastapi import FastAPI, UploadFile, File, Header, HTTPException, Request
+from fastapi import FastAPI, UploadFile, File, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -18,13 +18,8 @@ from .prompt import build_prompt
 from .llm import chat
 from .embed import embed_texts  # <-- your NVIDIA embeddings wrapper
 
-# Configure FastAPI with larger file upload limits
-app = FastAPI(
-    title="NVIDIA RAG Agent API", 
-    version="0.1.2",
-    # Set max request body size to 100MB (adjust as needed)
-    # Note: This is a soft limit; actual limit may depend on proxy/gateway settings
-)
+
+app = FastAPI(title="NVIDIA RAG Agent API", version="0.1.2")  # CORS enabled for all origins
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,38 +27,19 @@ app.add_middleware(
     allow_credentials=False,  # Must be False to use wildcard origins
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],  # Expose all headers to the client
 )
-
-# Middleware to add CORS headers to all responses (including errors)
-@app.middleware("http")
-async def add_cors_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "x-session-id, Content-Type, Authorization"
-    return response
 
 # Add explicit OPTIONS handler for CORS preflight
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str):
-    return JSONResponse(
-        content={"message": "OK"},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "x-session-id, Content-Type, Authorization",
-        }
-    )
+    return {"message": "OK"}
 
 # ----------------------------
 # Session storage (per-user)
 # ----------------------------
 SESSIONS_DIR = Path("cache/sessions")
 ALLOWED_EXT = {".pdf", ".txt", ".md"}
-# File upload limits (in bytes)
-MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB per file
-MAX_TOTAL_UPLOAD_SIZE = 500 * 1024 * 1024  # 500 MB total per request
+
 # In-memory session cache: session_id -> (chunks, vectors)
 SESSION_CACHE: Dict[str, Tuple[List[Dict[str, Any]], np.ndarray]] = {}
 
@@ -131,17 +107,6 @@ def chunk_by_paragraphs(text: str, chunk_size: int = 450, overlap: int = 80) -> 
     current = ""
 
     for p in paragraphs:
-        # If paragraph itself exceeds chunk_size, split it
-        if len(p) > chunk_size:
-            # Save current chunk if exists
-            if current:
-                chunks.append(current)
-                current = ""
-            # Split oversized paragraph into smaller chunks
-            for i in range(0, len(p), chunk_size):
-                chunks.append(p[i:i + chunk_size])
-            continue
-        
         candidate = (current + "\n\n" + p).strip() if current else p
         if len(candidate) <= chunk_size:
             current = candidate
@@ -294,7 +259,6 @@ async def upload_files(
     sdir = session_dir(x_session_id)
     docs_dir = sdir / "docs"
     saved = []
-    total_size = 0
 
     for f in files:
         ext = Path(f.filename).suffix.lower()
@@ -302,33 +266,9 @@ async def upload_files(
             raise HTTPException(status_code=400, detail=f"Unsupported file type: {f.filename}")
 
         out_path = docs_dir / f.filename
-        
-        # Stream file upload in chunks to handle large files efficiently
-        file_size = 0
         with out_path.open("wb") as out:
-            while chunk := await f.read(1024 * 1024):  # Read 1MB at a time
-                file_size += len(chunk)
-                total_size += len(chunk)
-                
-                # Check individual file size
-                if file_size > MAX_FILE_SIZE:
-                    out_path.unlink(missing_ok=True)  # Clean up partial file
-                    raise HTTPException(
-                        status_code=413, 
-                        detail=f"File {f.filename} exceeds maximum size of {MAX_FILE_SIZE // (1024*1024)}MB"
-                    )
-                
-                # Check total upload size
-                if total_size > MAX_TOTAL_UPLOAD_SIZE:
-                    out_path.unlink(missing_ok=True)  # Clean up partial file
-                    raise HTTPException(
-                        status_code=413,
-                        detail=f"Total upload size exceeds maximum of {MAX_TOTAL_UPLOAD_SIZE // (1024*1024)}MB"
-                    )
-                
-                out.write(chunk)
-        
-        saved.append({"name": f.filename, "size": file_size})
+            shutil.copyfileobj(f.file, out)
+        saved.append(f.filename)
 
     # If user uploads new docs, invalidate built index in memory + disk vectors
     SESSION_CACHE.pop(x_session_id, None)
@@ -336,14 +276,7 @@ async def upload_files(
     # for p in [sdir/"chunks.json", sdir/"vectors.npy"]:
     #     if p.exists(): p.unlink()
 
-    return JSONResponse(
-        content={"status": "ok", "session_id": x_session_id, "saved": saved, "total_size": total_size},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "x-session-id, Content-Type",
-        }
-    )
+    return {"status": "ok", "session_id": x_session_id, "saved": saved}
 
 
 @app.post("/build")
@@ -357,7 +290,7 @@ def build_session_index(
     """
     sdir = session_dir(x_session_id)
     docs_dir = sdir / "docs"
-
+    
     # Reduced chunk size to ~300 chars (~75-90 tokens) to stay well under NVIDIA's 512 token limit
     chunks = build_chunks_from_docs(docs_dir, chunk_size=300, overlap=50)
     (sdir / "chunks.json").write_text(json.dumps(chunks, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -488,4 +421,3 @@ def chat_endpoint(req: ChatRequest, x_session_id: str = Header(default="", alias
     top_score = float(retrieved[0]["score"]) if retrieved else 0.0
     top_sources = [{"source": f"{r['doc_id']}#{r['chunk_id']}", "score": float(r["score"])} for r in retrieved]
 
-    return ChatResponse(answer=answer, top_sources=top_sources, top_score=top_score, history_len=len(SESSION_CHAT[x_session_id]))
