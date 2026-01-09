@@ -131,6 +131,17 @@ def chunk_by_paragraphs(text: str, chunk_size: int = 450, overlap: int = 80) -> 
     current = ""
 
     for p in paragraphs:
+        # If paragraph itself exceeds chunk_size, split it
+        if len(p) > chunk_size:
+            # Save current chunk if exists
+            if current:
+                chunks.append(current)
+                current = ""
+            # Split oversized paragraph into smaller chunks
+            for i in range(0, len(p), chunk_size):
+                chunks.append(p[i:i + chunk_size])
+            continue
+        
         candidate = (current + "\n\n" + p).strip() if current else p
         if len(candidate) <= chunk_size:
             current = candidate
